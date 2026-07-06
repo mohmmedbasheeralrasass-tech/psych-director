@@ -38,7 +38,7 @@ if api_key:
                 
                 try:
                     # تشغيل النموذج المستقل
-                    model = genai.GenerativeModel('gemini-1.5-flash')
+                    model = genai.GenerativeModel('gemini-pro')
                     response = model.generate_content(f"{system_instruction}\n\nفكرة الفيديو هي: {user_idea}")
                     
                     st.success("تمت الهندسة السيكولوجية بنجاح!")
