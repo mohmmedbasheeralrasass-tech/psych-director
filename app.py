@@ -1,52 +1,21 @@
 import streamlit as st
 import google.generativeai as genai
 
-# إعداد واجهة الموقع
-st.set_page_config(page_title="AI Psych-Director", page_icon="🎬", layout="centered")
+st.set_page_config(page_title="AI Psych-Director")
+st.title("AI Psych-Director | المخرج النفسي")
 
-st.title("🎬 المُخرج النفسي للمحتوى | AI Psych-Director")
-st.subheader("هندسة السكربتات القصيرة بناءً على علم النفس السلوكي وصراع الأضداد")
-st.write("اكتب فكرتك أدناه ودع النظام يحولها إلى فيديو عالي الاحتفاظ بالمشاهدة.")
-
-# إدخال مفتاح الأمان لحماية استقلالية موقعك
-api_key = st.text_input("أدخل مفتاح الأمان الخاص بك (Gemini API Key):", type="password")
+api_key = st.text_input("أدخل Gemini API Key الخاص بك:", type="password")
 
 if api_key:
-    # إعداد نموذج الذكاء الاصطناعي بشكل مستقل وآمن في الخلفية
     genai.configure(api_key=api_key)
+    model = genai.GenerativeModel(model_name="gemini-1.5-flash")
     
-    user_idea = st.text_area("ما هي فكرة الفيديو أو موضوعه؟", placeholder="مثال: كيف يخدعنا مفهوم الوقت...")
+    user_idea = st.text_area("ما هي فكرة الفيديو أو موضوعه؟")
     
-    if st.button("هندسة وإخراج السكربت سيكولوجياً"):
+    if st.button("هندسة وإخراج السكريبت سيكولوجياً"):
         if user_idea:
-            with st.spinner("جاري تحليل العقل البشري وهندسة الأضداد..."):
-                
-                # توجيه المخرج النفسي السري (محمي تماماً في الخلفية ولا يمكن سرقته)
-                system_instruction = """
-                أنت الآن "المُخرِج النفسي للمحتوى" (AI Psych-Director). مهمتك هي أخذ فكرة الفيديو من المستخدم وتحويلها إلى سكربت فيديو قصير (TikTok/Reels/Shorts) مهندس سيكولوجياً لرفع هرمونات الانتباه (الدوبامين والأدرينالين) لضمان أعلى نسبة احتفاظ بالمشاهدة (High Retention).
-
-                عندما يعطيك المستخدم الفكرة، يجب أن تلتزم بالقواعد التالية في مخرجاتك:
-                1. الالتزام باللهجة أو اللغة التي يطلبها المستخدم (عامية، فصحى، إلخ).
-                2. تقسيم الإخراج إلى جدول زمني دقيق يحتوي على (التوقيت بالثواني، النص الكلامي، التوجيه البصري، المؤثر الصوتي السلوكي SFX).
-                3. تطبيق فلسفة "صراع الأضداد" في السكربت لإثارة فضول عقل المشاهد البشري وجعله يستمر للنهاية لمنع الملل العقلاني.
-
-                تنسيق النتيجة يجب أن يكون كالتالي:
-                - العنوان النفسي للفيديو: (عنوان يثير الفضول الفجائي).
-                - الخطاف (الأول 3 ثوانٍ): الجملة الافتتاحية والمؤثر الصوتي الصادم.
-                - جدول السكربت والمونتاج (Timeline Table).
-                """
-                
-                try:
-                    # تشغيل النموذج المستقل
-                    model = genai.GenerativeModel('gemini-1.5-flash-latest')
-                    response = model.generate_content(f"{system_instruction}\n\nفكرة الفيديو هي: {user_idea}")
-                    
-                    st.success("تمت الهندسة السيكولوجية بنجاح!")
-                    st.markdown(response.text)
-                    
-                except Exception as e:
-                    st.error(f"حدث خطأ أثناء الاتصال: {e}")
-        else:
-            st.warning("رجاءً اكتب فكرة الفيديو أولاً.")
-else:
-    st.info("رجاءً أدخل مفتاح Gemini API للبدء لتشغيل محرك موقعك الخاص.")
+            try:
+                response = model.generate_content(f"You are an expert content director. Create a high-retention script for: {user_idea}")
+                st.markdown(response.text)
+            except Exception as e:
+                st.error(f"Error: {e}")
